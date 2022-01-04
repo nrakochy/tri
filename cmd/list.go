@@ -8,7 +8,6 @@ import (
 	"fmt"
 	"log"
 	"os"
-	"strconv"
 	"text/tabwriter"
 
 	"github.com/nrakochy/tri/todo"
@@ -23,7 +22,7 @@ func runList(cmd *cobra.Command, args []string) {
 
 	w := tabwriter.NewWriter(os.Stdout, 3, 0, 1, ' ', 0)
 	for _, i := range items {
-		msg := strconv.Itoa(i.Priority) + "\t" + i.Text + "\t"
+		msg := i.PrettyP() + "\t" + i.Text + "\t"
 		fmt.Fprintln(w, msg)
 	}
 	w.Flush()

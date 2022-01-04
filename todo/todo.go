@@ -10,6 +10,16 @@ type Item struct {
 	Priority int
 }
 
+func (i *Item) PrettyP() string {
+	if i.Priority == 1 {
+		return "(1)"
+	}
+        if i.Priority == 3 {
+		return "(3)"
+	}
+	return " "
+}
+
 func (i *Item) SetPriority(pri int){
 	switch pri {
 	case 1: 
