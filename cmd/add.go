@@ -6,6 +6,7 @@ package cmd
 
 import (
 	"fmt"
+	"log"
 
 	"github.com/nrakochy/tri/todo"
 	"github.com/spf13/cobra"
@@ -13,12 +14,16 @@ import (
 
 
 func addRun(cmd *cobra.Command, args []string){
-  items := []todo.Item{}
+  items, err := todo.ReadItems(TODO_FILE)
+  if err != nil {
+	  log.Printf("%v", err)
+  }
   for _, x := range args {
 	  items = append(items, todo.Item{Text: x})
   }
- err := todo.SaveItems(TODO_FILE, items);
- if err != nil {
+
+ writeErr := todo.SaveItems(TODO_FILE, items);
+ if writeErr != nil {
 	 fmt.Errorf("%v", err)
  }
 }
