@@ -13,7 +13,7 @@ import (
 )
 
 func runList(cmd *cobra.Command, args []string) {
-	items, err := todo.ReadItems(TODO_FILE)
+	items, err := todo.ReadItems(dataFile)
 	if err != nil {
 		log.Printf("%v", err)
 	}
