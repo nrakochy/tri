@@ -36,7 +36,7 @@ func Execute() {
 	}
 }
 
-	var dataFile string
+var dataFile string
 
 func init() {
 	home, err := homedir.Dir()
