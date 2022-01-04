@@ -11,12 +11,17 @@ import (
 	"github.com/spf13/cobra"
 )
 
+const writeToFile = "/Users/nickrakochy/Desktop/.tridos.json";
+
 func addRun(cmd *cobra.Command, args []string){
   items := []todo.Item{}
   for _, x := range args {
 	  items = append(items, todo.Item{Text: x})
   }
-	fmt.Printf("%#v\n", items)
+ err := todo.SaveItems(writeToFile, items);
+ if err != nil {
+	 fmt.Errorf("%v", err)
+ }
 }
 
 // addCmd represents the add command
