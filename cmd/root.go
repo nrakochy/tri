@@ -5,15 +5,19 @@ Copyright © 2022 Nick Rakochy
 package cmd
 
 import (
-	"log"
+	"fmt"
 	"os"
 
-	"github.com/mitchellh/go-homedir"
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 )
 
 // rootCmd represents the base command when called without any subcommands
-var rootCmd = &cobra.Command{
+var (
+	cfgFile string
+	dataFile string
+
+	rootCmd = &cobra.Command{
 	Use:   "tri",
 	Short: "A brief description of your application",
 	Long: `A longer description that spans multiple lines and likely contains
@@ -27,6 +31,27 @@ to quickly create a Cobra application.`,
 	// Run: func(cmd *cobra.Command, args []string) { },
 }
 
+)
+
+func initConfig(){
+	if cfgFile != "" {
+		viper.SetConfigFile(cfgFile)
+	} else {
+		home, err := os.UserHomeDir()
+		cobra.CheckErr(err)
+
+		viper.AddConfigPath(home)
+		viper.SetConfigType("yaml")
+		viper.SetConfigName(".tri")
+	}
+
+	viper.AutomaticEnv()
+
+	if err := viper.ReadInConfig(); err == nil {
+		fmt.Println("Using config file:", viper.ConfigFileUsed())
+	}
+}
+
 // Execute adds all child commands to the root command and sets flags appropriately.
 // This is called by main.main(). It only needs to happen once to the rootCmd.
 func Execute() {
@@ -36,21 +61,10 @@ func Execute() {
 	}
 }
 
-var dataFile string
-
 func init() {
-	home, err := homedir.Dir()
-	if err != nil {
-		log.Println("Unable to detect home dir. Please set data file using --datafile")
-	}
-	// Here you will define your flags and configuration settings.
-	// Cobra supports persistent flags, which, if defined here,
-	// will be global for your application.
-
-	defaultFile := home + string(os.PathSeparator) + ".tridos.json"
-	rootCmd.PersistentFlags().StringVar(&dataFile, "datafile", defaultFile, "data file to store todos")
-	// Cobra also supports local flags, which will only run
-	// when this action is called directly.
+	cobra.OnInitialize(initConfig)
+	rootCmd.PersistentFlags().StringVar(&dataFile, "datafile", "", "data file to store todos")
+	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.tri.yaml)")
 	rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }
 
